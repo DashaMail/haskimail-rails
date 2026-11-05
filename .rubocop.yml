@@ -1,0 +1,58 @@
+plugins:
+  - rubocop-rspec
+  - rubocop-rake
+
+AllCops:
+  TargetRubyVersion: 3.1
+  NewCops: enable
+  SuggestExtensions: false
+  Exclude:
+    - "vendor/**/*"
+    - "coverage/**/*"
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+
+Style/Documentation:
+  Exclude:
+    - "spec/**/*"
+
+Layout/LineLength:
+  Max: 120
+  Exclude:
+    - "spec/**/*"
+
+Metrics/MethodLength:
+  Max: 25
+Metrics/AbcSize:
+  Max: 30
+Metrics/CyclomaticComplexity:
+  Max: 12
+Metrics/PerceivedComplexity:
+  Max: 12
+Metrics/ClassLength:
+  Max: 200
+Metrics/ParameterLists:
+  CountKeywordArgs: false
+Metrics/BlockLength:
+  Exclude:
+    - "spec/**/*"
+    - "*.gemspec"
+
+Naming/FileName:
+  Exclude:
+    - "lib/haskimail-rails.rb"
+
+RSpec/ExampleLength:
+  Max: 40
+RSpec/MultipleExpectations:
+  Max: 12
+RSpec/NestedGroups:
+  Max: 4
+RSpec/MultipleMemoizedHelpers:
+  Max: 8
+RSpec/SpecFilePathFormat:
+  Enabled: false
+RSpec/DescribeClass:
+  Exclude:
+    - "spec/haskimail/core_spec.rb"
