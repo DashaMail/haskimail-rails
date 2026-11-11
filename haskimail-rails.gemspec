@@ -21,10 +21,14 @@ Gem::Specification.new do |spec|
 
   spec.metadata = {
     "homepage_uri" => spec.homepage,
+    "documentation_uri" => "https://haskimail.ru/developer",
+    "changelog_uri" => "https://github.com/DashaMail/haskimail-rails/blob/main/CHANGELOG.md",
+    "source_code_uri" => "https://github.com/DashaMail/haskimail-rails",
+    "bug_tracker_uri" => "https://github.com/DashaMail/haskimail-rails/issues",
     "rubygems_mfa_required" => "true"
   }
 
-  spec.files = Dir["lib/**/*", "README.md", "CHANGELOG.md", "LICENSE.txt"]
+  spec.files = Dir["lib/**/*.rb", "README.md", "CHANGELOG.md", "LICENSE.txt"]
   spec.require_paths = ["lib"]
 
   spec.add_dependency "actionmailer", ">= 6.1", "< 9"

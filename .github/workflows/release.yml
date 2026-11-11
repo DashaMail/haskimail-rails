@@ -1,0 +1,63 @@
+name: Release
+
+# Publishes to RubyGems when a version tag (v1.2.3) is pushed.
+# Uses RubyGems trusted publishing — no API key is stored in the repository.
+#
+# One-time setup: create a pending trusted publisher for the `haskimail-rails`
+# gem (repo DashaMail/haskimail-rails, workflow release.yml, environment
+# release) and create the `release` environment in this repository.
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    name: Verify the tagged commit
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Tag is on main
+        run: |
+          git fetch --no-tags origin main
+          git merge-base --is-ancestor "$GITHUB_SHA" FETCH_HEAD
+      - uses: ruby/setup-ruby@7f797815d8adceb1c412e7abefdd1ab4abc47a5f # v1.335.0
+        with:
+          ruby-version: "3.4"
+          bundler-cache: false
+      - name: Tag matches the gem version
+        run: test "v$(ruby -Ilib -e 'require "haskimail/version"; print Haskimail::VERSION')" = "$GITHUB_REF_NAME"
+      - run: bundle install
+      - run: bundle exec rspec
+      - run: gem build --strict haskimail-rails.gemspec
+
+  release:
+    name: Publish to RubyGems
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: release
+    permissions:
+      contents: write # `rake release` pushes the version tag
+      id-token: write # RubyGems trusted publishing
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: ruby/setup-ruby@7f797815d8adceb1c412e7abefdd1ab4abc47a5f # v1.335.0
+        with:
+          ruby-version: "3.4"
+          bundler-cache: false
+      - run: bundle install
+      - uses: rubygems/release-gem@7f9650160c1a4e7989fdc9855807bdbd421d8b6b # v1.4.1
